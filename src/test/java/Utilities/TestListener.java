@@ -1,32 +1,25 @@
 package Utilities;
 
-import com.aventstack.extentreports.ExtentTest;
-import org.testng.*;
-import java.lang.reflect.Method;
+import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
 
 /**
- * TestNG Listener for ExtentReports integration
+ * TestNG Listener for automatic ExtentReports integration
  */
-public class ExtentTestNGListener implements ITestListener, ISuiteListener {
+public class TestListener implements ITestListener {
 
     @Override
-    public void onStart(ISuite suite) {
-        // Initialize reports when suite starts
+    public void onStart(ITestContext context) {
+        // Initialize reports once before all tests
         ExtentReportManager.initReports();
     }
 
     @Override
-    public void onFinish(ISuite suite) {
-        // Flush reports when suite finishes
-        ExtentReportManager.flushReports();
-    }
-
-    @Override
     public void onTestStart(ITestResult result) {
-        // Create a new test in the report
-        Method method = result.getMethod().getConstructorOrMethod().getMethod();
+        // Create a new test for each test method
         String testName = result.getMethod().getMethodName();
-        String description = method.getAnnotation(org.testng.annotations.Test.class).description();
+        String description = result.getMethod().getDescription();
 
         if (description != null && !description.isEmpty()) {
             ExtentReportManager.createTest(testName, description);
@@ -34,40 +27,27 @@ public class ExtentTestNGListener implements ITestListener, ISuiteListener {
             ExtentReportManager.createTest(testName);
         }
 
-        ExtentReportManager.logInfo("Test Started: " + testName);
+        ExtentReportManager.logInfo("Test started: " + testName);
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        ExtentReportManager.logPass("Test Passed: " + result.getMethod().getMethodName());
-        ExtentReportManager.handleTestResult(result);
+        ExtentReportManager.logPass("Test passed: " + result.getMethod().getMethodName());
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        ExtentReportManager.logFail("Test Failed: " + result.getMethod().getMethodName() +
-                                   ". Error: " + result.getThrowable().getMessage());
-        ExtentReportManager.handleTestResult(result);
+        ExtentReportManager.logFail("Test failed: " + result.getThrowable().getMessage());
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        ExtentReportManager.logSkip("Test Skipped: " + result.getMethod().getMethodName());
-        ExtentReportManager.handleTestResult(result);
-    }
-
-    @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-        // Not commonly used, but can be implemented if needed
-    }
-
-    @Override
-    public void onStart(ITestContext context) {
-        // Can be used for additional setup if needed
+        ExtentReportManager.logSkip("Test skipped: " + result.getMethod().getMethodName());
     }
 
     @Override
     public void onFinish(ITestContext context) {
-        // Can be used for additional cleanup if needed
+        // Flush reports after all tests complete
+        ExtentReportManager.flushReports();
     }
 }

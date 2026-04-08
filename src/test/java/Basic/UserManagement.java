@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.*;
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("User Management API - Complete Workflow Test")
-public class UserManagementTest {
+public class UserManagement {
 
     // ----------------------------------------------------------------
     // Shared state across tests
