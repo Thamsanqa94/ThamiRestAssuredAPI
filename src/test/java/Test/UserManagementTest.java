@@ -13,7 +13,7 @@ public class UserManagementTest {
     @Test
     public void adminLoginTest() {
         // Remove the instantiation - use static method directly
-        ApiRequestBuilder.loginUserResponse("admin@gmail.com", "@12345678")
+        ApiRequestBuilder.loginUserResponse("spare@admin.com", "@12345678")
                 .then()
                 .log().all()
                 .assertThat()
@@ -24,7 +24,7 @@ public class UserManagementTest {
     @Test(dependsOnMethods = "adminLoginTest")
     public void registerNewUser() {
         registeredEmail = Faker.instance().internet().emailAddress();
-        ApiRequestBuilder.registerUserResponse("New", "User", registeredEmail, "@87654321", "1deae17a-c67a-4bb0-bdeb-df0fc9e2e526")
+        ApiRequestBuilder.registerUserResponse("New", "User", registeredEmail, "@12345678", "1deae17a-c67a-4bb0-bdeb-df0fc9e2e526")
                 .then()
                 .log().all()
                 .assertThat()
@@ -54,7 +54,7 @@ public class UserManagementTest {
 
     @Test(dependsOnMethods = "makeUserAdmin")
     public void verifyNewAdminUser() {
-        ApiRequestBuilder.loginUserResponse(registeredEmail, "@87654321")
+        ApiRequestBuilder.loginUserResponse(registeredEmail, "@12345678")
                 .then()
                 .log().all()
                 .assertThat()
@@ -66,7 +66,7 @@ public class UserManagementTest {
     @Test(dependsOnMethods = "verifyNewAdminUser")
     public void deleteNewlyCreatedUser() {
         // Re-login as original admin before delete
-        ApiRequestBuilder.loginUserResponse("admin@gmail.com", "@12345678");
+        ApiRequestBuilder.loginUserResponse("spare@admin.com", "@12345678");
 
         ApiRequestBuilder.deleteUserResponse()
                 .then()

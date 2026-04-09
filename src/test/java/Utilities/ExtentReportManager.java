@@ -33,6 +33,13 @@ public class ExtentReportManager {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
             String reportPath = System.getProperty("user.dir") + "/test-output/ExtentReports/API_Test_Report_" + timestamp + ".html";
 
+            // Ensure the directory exists
+            try {
+                java.nio.file.Files.createDirectories(java.nio.file.Paths.get(reportPath).getParent());
+            } catch (Exception e) {
+                System.err.println("Failed to create report directory: " + e.getMessage());
+            }
+
             ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
 
             // Configure the report
